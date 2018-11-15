@@ -3,7 +3,7 @@
 # created by Demian Ginther
 # st.diluted@gmail.com
 
-[[ -z "${GITHUB_API_TOKEN}" ]] && github_api_token='' || github_api_token="${GITHUB_API_TOKEN}"
+[[ -z "${GITHUB_API_TOKEN}" ]] && github_api_token="" || github_api_token="${GITHUB_API_TOKEN}"
 github_username=""
 github_org=""
 github_repo=""
