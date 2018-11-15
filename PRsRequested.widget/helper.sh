@@ -17,8 +17,16 @@ command -v $curl_exe >/dev/null 2>&1  || { echo >&2 "I require curl but it's not
 # Get a list of open PRs for the specified user
 pr_list=`$curl_exe -ks -H "Authorization: token $github_api_token" https://api.github.com/repos/$github_org/$github_repo/pulls|/usr/local/bin/jq -r '.[] | select(.requested_reviewers[].login == "'$github_username'")| { title: .title, URL: .html_url }'`
 
-# code into Base64 and decide to properly split lines.
+# code into Base64 and decode to properly split lines.
 for row in $(echo "${pr_list}"| $jq_exe -r '.[] | @base64'); do
   line=`echo ${row} | base64 --decode`
-  echo -e "$line"
+
+  case $line in
+    *api*  )
+      status=`$curl_exe -ks -H "Authorization: token $github_api_token" $line|/usr/local/bin/jq -r '.[0].state'`
+      echo "$status#";;
+    *pull* ) echo "$line#" ;;
+    *      ) echo "$line#" ;;
+  esac
+
 done
